@@ -20,25 +20,25 @@ const Sidebar = (
             <ul className="flex flex-col">
                 <SidebarItem
                     icon={LayoutTemplate}
-                    lable="Design"
+                    lable="设计"
                     isActive={activeTool === "templates"}
                     onClick={()=>onChangeActiveTool("templates")}
                 />
                <SidebarItem
                     icon={ImageIcon}
-                    lable="Image"
+                    lable="图片"
                     isActive={activeTool === "images"}
                     onClick={()=>onChangeActiveTool("images")}
                 />
                  <SidebarItem
                     icon={Type}
-                    lable="Text"
+                    lable="文本"
                     isActive={activeTool === "text"}
                     onClick={()=>onChangeActiveTool("text")}
                 />
                  <SidebarItem
                     icon={Shapes}
-                    lable="Shapes"
+                    lable="图形"
                     isActive={activeTool==="shapes"}
                     onClick={()=>onChangeActiveTool("shapes")}
                 />
@@ -51,7 +51,7 @@ const Sidebar = (
                 />
                  <SidebarItem
                     icon={Settings}
-                    lable="Settings"
+                    lable="设置"
                     isActive={activeTool==="settings"}
                     onClick={()=>onChangeActiveTool("settings")}
                 />
