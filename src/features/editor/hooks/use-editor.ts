@@ -11,9 +11,18 @@ import { BuildEditorProps,
          STROKE_WIDTH, 
          TRIANGLE_OPTIONS} from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
+import { isTextType } from "../utils";
 
 
-const buildEditor = ({canvas}: BuildEditorProps): Editor => {
+const buildEditor = ({
+    canvas,
+    fillColor,
+    strokeColor,
+    strokeWidth,
+    setFillColor,
+    setStrokeColor,
+    setStrokeWidth,
+}: BuildEditorProps): Editor => {
     const getWorkpace = ()=>{
         return canvas.getObjects().find((obj)=>obj.name === "clip")
     }
@@ -32,10 +41,39 @@ const buildEditor = ({canvas}: BuildEditorProps): Editor => {
         canvas.setActiveObject(object)
     }
     return {
+        changeFillColor: (color: string)=>{
+            setFillColor(color);
+            canvas.getActiveObjects().forEach((obj)=>{
+                obj.set({fill: color})
+            })
+            canvas.renderAll()
+        },
+        changeStrokeColor: (color: string)=>{
+            setStrokeColor(color)
+            canvas.getActiveObjects().forEach((obj)=>{
+                // text types don't have stroke
+                if(isTextType(obj.type)){
+                    obj.set({fill: color})
+                    return;
+                }
+
+            })
+            canvas.renderAll()
+        },
+        changeStrokeWidth: (width: number)=>{
+            setStrokeWidth(width)
+            canvas.getActiveObjects().forEach((obj)=>{
+                obj.set({strokeWidth: width})
+            })
+            canvas.renderAll()
+        },
         addCircle: ()=>{
             console.log("addCircle")
             const circle = new fabric.Circle({
                 ...CRICLE_OPTIONS,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             });
            addToCanvas(circle)
         },
@@ -44,18 +82,27 @@ const buildEditor = ({canvas}: BuildEditorProps): Editor => {
                 ...RECTANGLE_OPTIONS,
                 rx: 50,
                 ry: 50,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             });
             addToCanvas(softRectangle)
         },
         addRectangle: ()=>{
             const rectangle = new fabric.Rect({
                 ...RECTANGLE_OPTIONS,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             });
             addToCanvas(rectangle)
         },
         addTrangle: ()=>{
             const trangle = new fabric.Triangle({
                 ...TRIANGLE_OPTIONS,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             });
             addToCanvas(trangle)
         },
@@ -63,6 +110,9 @@ const buildEditor = ({canvas}: BuildEditorProps): Editor => {
             const invertedTrangle = new fabric.Triangle({
                 ...TRIANGLE_OPTIONS,
                 angle: 180,
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             });
             addToCanvas(invertedTrangle)
         },
@@ -75,12 +125,19 @@ const buildEditor = ({canvas}: BuildEditorProps): Editor => {
                 new fabric.Point(WIDTH, HEIGHT/2),
                 new fabric.Point(WIDTH/2, HEIGHT),
             ], {
-                ...DIAMOND_OPTIONS,
+                ...DIAMOND_OPTIONS, 
+                fill: fillColor,
+                stroke: strokeColor,
+                strokeWidth: strokeWidth
             })
             addToCanvas(diamond)
-        }
-    }
-}
+        },
+        canvas,
+        fillColor,
+        strokeColor,
+        strokeWidth,
+    };
+};
 
 
 export const useEditor = ()=>{
@@ -93,10 +150,18 @@ export const useEditor = ()=>{
 
     const editor = useMemo(()=>{
         if(canvas){
-            return buildEditor({canvas});
+            return buildEditor({
+                canvas,
+                fillColor,
+                strokeColor,
+                strokeWidth,
+                setFillColor,
+                setStrokeColor,
+                setStrokeWidth,
+            });
         }
         return undefined;
-    },[canvas])
+    },[canvas,fillColor,strokeColor,strokeWidth])
 
     useCanvasEvents({
         canvas,
