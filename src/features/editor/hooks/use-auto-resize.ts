@@ -14,7 +14,7 @@ export const useAutoResize = ({
         
         const width = container.offsetWidth;
         const height = container.offsetHeight;
-        console.log(`${width} - auto-size - ${height}`);
+        // console.log(`${width} - auto-size - ${height}`);
         
         canvas.setWidth(width);
         canvas.setHeight(height);
@@ -37,12 +37,12 @@ export const useAutoResize = ({
         
         if (!viewportTransform || !canvas.width || !canvas.height) return;
         
-        console.log(`${viewportTransform[4]} 放大前 ${viewportTransform[5]}`);
+        // console.log(`${viewportTransform[4]} 放大前 ${viewportTransform[5]}`);
         
         viewportTransform[4] = canvas.width / 2 - workspaceCenter.x * viewportTransform[0];
         viewportTransform[5] = canvas.height / 2 - workspaceCenter.y * viewportTransform[3];
         
-        console.log(`${viewportTransform[4]} 放大后 ${viewportTransform[5]}`);
+        // console.log(`${viewportTransform[4]} 放大后 ${viewportTransform[5]}`);
         canvas.setViewportTransform(viewportTransform); // 应用更新后的视口变换
         
         // 设置 clipPath 并请求渲染
