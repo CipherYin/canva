@@ -1,5 +1,39 @@
 import { fabric } from "fabric";
+import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
+
+export const fonts = [
+    "Arial",
+    "Arial Black",
+    "Verdana",
+    "Helvetica",
+    "Tahoma",
+    "Trebuchet MS",
+    "Times New Roman",
+    "Georgia",
+    "Garamond",
+    "Courier New",
+    "Brush Script MT",
+    "Palatino",
+    "Bookman",
+    "Comic Sans MS",
+    "Impact",
+    "Lucida Sans Unicode",
+    "Geneva",
+    "Lucida Console",
+]
+export interface EditorHookProps {
+    clearSelectionCallback?: ()=>void
+};
+export const selectionDependentTools = [
+    "fill",
+    "font",
+    "filter",
+    "opacity",
+    "remove-bg",
+    "stroke-color",
+    "stroke-width"
+]
 
 export const COLORS = [
     material.red["500"],
@@ -45,6 +79,11 @@ export type ActiveTool =
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 2;
+export const STROKE_DASH_ARRAY = [];
+export const FONT_FAMILI ="Arial";
+export const FONT_SIZE = 32;
+export const FONT_WEIGHT = 400;
+
 
 export const CRICLE_OPTIONS = {
     left: 100,
@@ -88,28 +127,70 @@ export const DIAMOND_OPTIONS = {
     stroke: STROKE_COLOR,
     strokeWidth: STROKE_WIDTH,
 }
+
+export const TEXT_OPTIONS = {
+    left: 100,
+    top: 100,
+    fill: FILL_COLOR,
+    type: "textbox",
+    fontSize: FONT_SIZE,
+    fontFamily: FONT_FAMILI
+}
 export type BuildEditorProps = {
     canvas: fabric.Canvas;
     fillColor: string;
     strokeColor: string;
     strokeWidth: number;
+    strokeDashArray: number[];
+    fontFamily: string;
+    fontWeight: number;
+    setFontWeight: (weight: number) => void;
+    setStrokeDashArray: (value: number[])=>void;
     setFillColor: (color: string)=>void;
     setStrokeColor: (color: string)=>void;
     setStrokeWidth: (width: number)=>void;
+    setFontFamily: (value: string) => void;
+    selectedObjects: fabric.Object[]
 }
 
 export interface Editor{
+    bringForward: () => void;
+    sendBackwards: () => void;
     addCircle: ()=>void;
     addSoftRectangle: ()=>void;
     addRectangle: ()=>void;
     addTrangle: ()=>void;
     addInverseTrangle: ()=>void;
     addDiamond: ()=>void;
+    addText: (value: string, options?: ITextboxOptions) => void;
+    changeOpacity: (value:number) => void;
     changeFillColor: (color: string)=>void;
     changeStrokeColor: (color: string)=>void;
     changeStrokeWidth: (width: number)=>void;
+    changeStrokeDashArray: (value: number[])=>void;
+    changeFontFamily: (value:string)=>void;
+    changeFontWeight: (value: number)=>void;
+    changeFontStyle: (value:string) => void;
+    changeFontLinethrough: (value:boolean)=>void;
+    changeFontUnderline: (value:boolean)=>void;
+    changeTextAlign: (value:string)=>void;
+    getActiveFillColor: () => string;
+    getActiveStrokeColor: () => string;
+    getActiveStrokeWidth: () => number;
+    getActiveStrokeDashArray: () => number[];
+    getActiveOpacity: () => number;
+    getActiveFontFamily: () => string;
+    getActiveFontWeight: () => number;
+    getActiveFontStyle: () => string;
+    getActiveLinethrough: ()=>boolean;
+    getActiveUnderline: ()=>boolean;
+    getActiveTextAlign: ()=>string;
+    canvas: fabric.Canvas;
     fillColor: string;
     strokeColor: string;
     strokeWidth: number;
-    canvas: fabric.Canvas;
+    fontFamily: string;
+    selectedObjects: fabric.Object[]
+    
+    
 }

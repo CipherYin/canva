@@ -6,9 +6,14 @@ import { Navbar } from "@/features/editor/components/navbar";
 import Sidebar from "@/features/editor/components/sidebar";
 import Toolbar from "@/features/editor/components/toolbar";
 import Footer from "@/features/editor/components/footer";
-import { ActiveTool } from "../types";
+import { ActiveTool, selectionDependentTools } from "../types";
 import ShapeSidebar from "./shape-sidebar";
 import FillColorSidebar from "./fill-color-sidebar";
+import StrokeColorSidebar from "./stroke-color-sidebar";
+import StrokeWidthSidebar from "./stroke-width-sidebar copy";
+import OpacitySidebar from "./opacity-sidebar";
+import TextSidebar from "./text-sidebar";
+import FontSidebar from "./font-sidebar";
 export const Editor = () => {
     const [activeTool,setActiveTool] = useState<ActiveTool>("select");
 
@@ -22,7 +27,16 @@ export const Editor = () => {
 
         setActiveTool(tool)
     },[activeTool])
-    const {init,editor} = useEditor()
+
+    const onClearSelection = useCallback(() => {
+        if(selectionDependentTools.includes(activeTool)){
+            setActiveTool("select")
+        }
+    },[activeTool])
+
+    const {init,editor} = useEditor({
+        clearSelectionCallback: onClearSelection,
+    })
 
     const canvasRef = useRef(null)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -63,6 +77,30 @@ export const Editor = () => {
                     editor={editor}
                     activeTool={activeTool}
                     onChangeActiveTool={onChangeActiveTool}/>
+                <StrokeColorSidebar
+                    editor={editor}
+                    activeTool={activeTool}
+                    onChangeActiveTool={onChangeActiveTool}/>
+                <StrokeWidthSidebar
+                    editor={editor}
+                    activeTool={activeTool}
+                    onChangeActiveTool={onChangeActiveTool}
+                />
+                <OpacitySidebar
+                    editor={editor}
+                    activeTool={activeTool}
+                    onChangeActiveTool={onChangeActiveTool}
+                />
+                <TextSidebar
+                    editor={editor}
+                    activeTool={activeTool}
+                    onChangeActiveTool={onChangeActiveTool}
+                />
+                <FontSidebar
+                    editor={editor}
+                    activeTool={activeTool}
+                    onChangeActiveTool={onChangeActiveTool}
+                />
                 <main className="bg-muted flex-1 overflow-auto relative flex flex-col">
                     <Toolbar
                         editor={editor}

@@ -6,18 +6,18 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { ColorPicker } from "./color-picker";
 
 
-interface FillColorSidebarProps{
+interface StrokeColorSidebarProps{
     editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
-const FillColorSidebar = (
+const StrokeColorSidebar = (
     {
         editor,
         activeTool,
         onChangeActiveTool
-    }: FillColorSidebarProps
+    }: StrokeColorSidebarProps
 ) => {
     const color = editor?.getActiveFillColor() || FILL_COLOR;
     const  onClose = ()=>{
@@ -25,19 +25,19 @@ const FillColorSidebar = (
     }
 
     const onChange = (value: string) => {
-        editor?.changeFillColor(value)
+        editor?.changeStrokeColor(value)
     }
 
     return (
     <aside
         className={cn(
             "bg-white relative border-r z-[40] w-[360px] h-full flex flex-col",
-            activeTool === "fill" ? "visible" : "hidden"
+            activeTool === "stroke-color" ? "visible" : "hidden"
         )}
         >
            <ToolSidebarHeader
-                title="填充颜色"
-                description="向元素填充颜色"
+                title="边框颜色"
+                description="填充边框颜色"
            />
            <ScrollArea>
                 <div className="p-4 space-y-6">
@@ -54,4 +54,4 @@ const FillColorSidebar = (
 );
 }
  
-export default FillColorSidebar;
+export default StrokeColorSidebar;
