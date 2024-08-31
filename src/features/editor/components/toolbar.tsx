@@ -4,11 +4,13 @@ import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BsBorderWidth } from "react-icons/bs";
+import {TbColorFilter} from "react-icons/tb"
 import { AlignCenter, AlignLeft, AlignRight, ArrowDown, ArrowUp, ChevronDown, Trash } from "lucide-react";
 import {RxTransparencyGrid} from "react-icons/rx"
 import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
 import FontSizeInput from "./font-size-input";
+
 interface ToolbarProps{
   editor: Editor | undefined,
   activeTool: ActiveTool,
@@ -72,6 +74,9 @@ const Toolbar = (
 
     const selectObjectType = editor?.selectedObjects[0]?.type
     const isText = isTextType(selectObjectType);
+    const isImage = selectObjectType === "image";
+
+
     if(editor?.selectedObjects.length===0){
       return (
         <div className="shrink-0 h-[56px] border-b bg-white w-full 
@@ -173,7 +178,9 @@ const Toolbar = (
     return ( 
         <div className="shrink-0 h-[56px] border-b bg-white w-full 
                 flex items-center overflow-x-auto z-[49] p-2 gap-x-2">
-          <div className="flex items-center h-full justify-center">
+          {
+            !isImage &&
+            <div className="flex items-center h-full justify-center">
             <Hint lable="填充颜色" side="bottom" sideOffset={5}>
               <Button
                 onClick={() => onChangeActiveTool("fill")}
@@ -192,6 +199,8 @@ const Toolbar = (
               </Button>
             </Hint>
           </div>
+          }
+         
           {
             !isText &&
             <div className="flex items-center h-full justify-center">
@@ -374,17 +383,24 @@ const Toolbar = (
               </Hint>
           </div>
           }
-           {
-            isText &&
+          {
+            isImage &&
             <div className="flex items-center h-full justify-center">
-              <Hint lable="右对齐" side="bottom" sideOffset={5}>
-                <FontSizeInput
-                  value={properties.fontSize}
-                  onChange={onChangeFontSize}
-                />
+              <Hint lable="滤镜" side="bottom" sideOffset={5}>
+                <Button
+                  onClick={() => onChangeActiveTool("filter")}
+                  size="icon"
+                  variant="ghost"
+                  className={cn(
+                    properties.textAlign === "filter" && "bg-gray-200"
+                  )}
+                >
+                  <TbColorFilter className="size-4"/>
+                </Button>
               </Hint>
           </div>
           }
+          
           <div className="flex items-center h-full justify-center">
             <Hint lable="上移" side="bottom" sideOffset={5}>
               <Button

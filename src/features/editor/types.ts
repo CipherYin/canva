@@ -58,6 +58,31 @@ export const COLORS = [
     "transparent"
 ]
 
+export const filters = [
+    { none: "无" },
+    { polaroid: "宝丽来" },
+    { sepia: "棕褐色" },
+    { kodachrome: "柯达彩色" },
+    { contrast: "对比度" },
+    { brightness: "亮度" },
+    { greyscale: "灰度" },
+    { brownie: "布朗尼" },
+    { vintage: "复古" },
+    { technicolor: "特艺色彩" },
+    { pixelate: "像素化" },
+    { invert: "反转" },
+    { blur: "模糊" },
+    { sharpen: "锐化" },
+    { emboss: "浮雕" },
+    { removecolor: "去色" },
+    { blacknwhite: "黑白" },
+    { vibrance: "自然饱和度" },
+    { blendcolor: "混合颜色" },
+    { huerotate: "色相旋转" },
+    { resize: "调整大小" },
+    { saturation: "饱和度" },
+    { gamma: "伽马" },
+  ];
 
 export type ActiveTool = 
 "select"
@@ -177,6 +202,7 @@ export interface Editor{
     changeFontUnderline: (value:boolean)=>void;
     changeFontSize: (value:number)=>void;
     changeTextAlign: (value:string)=>void;
+    changeImageFilter: (value:string)=>void;
     getActiveFillColor: () => string;
     getActiveStrokeColor: () => string;
     getActiveStrokeWidth: () => number;

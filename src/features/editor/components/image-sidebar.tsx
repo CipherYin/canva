@@ -9,6 +9,7 @@ import { useGetImages } from "@/features/images/api/use-get-images";
 import { AlertTriangle, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { UploadButton } from "@/lib/uploadthing";
 
 interface ImageSidebarProps{
     editor: Editor | undefined;
@@ -41,6 +42,21 @@ const ImageSidebar = (
                 title="图片"
                 description="向画布添加图片"
            />
+           <div className="p-4 border-b">
+                <UploadButton
+                    appearance={{
+                        button: "w-full text-sm font-medium",
+                        allowedContent: "hidden"
+                    }} 
+                    content={{
+                        button: "Upload Image"
+                    }}
+                    onClientUploadComplete={(res)=>{
+                        editor?.addImage(res[0].url)
+                    }}
+                    endpoint="imageUploader"
+                />
+           </div>
            {
             isLoading &&(
                 <div className="flex items-center justify-center flex-1">
@@ -71,6 +87,7 @@ const ImageSidebar = (
                                 className="relative w-full h-[100px] group hover:opacity-75
                                     transition bg-muted rounded-sm overflow-hidden border"
                             >
+
                                 <Image
                                     fill
                                     src={image.urls.small}

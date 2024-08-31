@@ -17,7 +17,7 @@ import { BuildEditorProps,
          TEXT_OPTIONS, 
          TRIANGLE_OPTIONS} from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
-import { isTextType } from "../utils";
+import { createFilter, isTextType } from "../utils";
 
 
 const buildEditor = ({
@@ -54,21 +54,7 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
-        addImage: (value: string) => {
-            fabric.Image.fromURL(
-                value,
-                (image) => {
-                    const workspace = getWorkpace();
-                    image.scaleToWidth(workspace?.width ||0)
-                    image.scaleToHeight(workspace?.height ||0)
-                    addToCanvas(image);
-                },
-                {
-                    crossOrigin: "anonymous",
-                }
-            )
-            canvas.renderAll()
-        },
+       
         delete: () => {
             canvas.getActiveObjects().forEach((object) => canvas.remove(object))
             canvas.discardActiveObject();
@@ -203,6 +189,18 @@ const buildEditor = ({
             })
             canvas.renderAll()
         },
+        changeImageFilter: (value: string) => {
+            const objects = canvas.getActiveObjects();
+            objects.forEach((object) => {
+                if(object.type === "image"){
+                    const imageObject = object as fabric.Image;
+                    const effect = createFilter(value);
+                    imageObject.filters = effect ? [effect]:[];
+                    imageObject.applyFilters();
+                    canvas.renderAll();
+                }
+            })
+        },
         addCircle: ()=>{
             console.log("addCircle")
             const circle = new fabric.Circle({
@@ -281,6 +279,21 @@ const buildEditor = ({
                 ...options
             });
             addToCanvas(object)
+        },
+        addImage: (value: string) => {
+            fabric.Image.fromURL(
+                value,
+                (image) => {
+                    const workspace = getWorkpace();
+                    image.scaleToWidth(workspace?.width ||0)
+                    image.scaleToHeight(workspace?.height ||0)
+                    addToCanvas(image);
+                },
+                {
+                    crossOrigin: "anonymous",
+                }
+            )
+            canvas.renderAll()
         },
         canvas,
         fillColor,
@@ -387,6 +400,7 @@ const buildEditor = ({
             const value = selectedObject.get("fontSize") || FONT_SIZE;
             return value as number;
         },
+       
         fontFamily,
         strokeColor,
         strokeWidth,
