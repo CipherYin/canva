@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { ActiveTool, Editor, FONT_WEIGHT } from "../types";
+import { ActiveTool, Editor, FONT_SIZE, FONT_WEIGHT } from "../types";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BsBorderWidth } from "react-icons/bs";
-import { AlignCenter, AlignLeft, AlignRight, ArrowDown, ArrowUp, ChevronDown } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, ArrowDown, ArrowUp, ChevronDown, Trash } from "lucide-react";
 import {RxTransparencyGrid} from "react-icons/rx"
 import { isTextType } from "../utils";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
+import FontSizeInput from "./font-size-input";
 interface ToolbarProps{
   editor: Editor | undefined,
   activeTool: ActiveTool,
@@ -31,7 +32,7 @@ const Toolbar = (
     const initialLinethrough = editor?.getActiveLinethrough() || false;
     const initialUnderline = editor?.getActiveUnderline() || false;
     const initialTextAlign = editor?.getActiveTextAlign() || "left";
-
+    const initialFontSize = editor?.getActiveFontSize() || FONT_SIZE;
     const [properties, setProperties] = useState({
         fillColor: initialFillColor,
         strokeColor: initialStrokeColor,
@@ -40,7 +41,8 @@ const Toolbar = (
         fontStyle: initialFontStyle,
         fontLinethrough: initialLinethrough,
         fontUnderline: initialUnderline,
-        textAlign: initialTextAlign
+        textAlign: initialTextAlign,
+        fontSize: initialFontSize
     })
 
     useEffect(()=>{
@@ -53,7 +55,8 @@ const Toolbar = (
         fontStyle: initialFontStyle,
         fontLinethrough: initialLinethrough,
         fontUnderline: initialUnderline,
-        textAlign: initialTextAlign
+        textAlign: initialTextAlign,
+        fontSize: initialFontSize
       }))
     },[
       initialFillColor,
@@ -63,7 +66,8 @@ const Toolbar = (
       initialFontStyle,
       initialLinethrough,
       initialUnderline,
-      initialTextAlign
+      initialTextAlign,
+      initialFontSize
     ])
 
     const selectObjectType = editor?.selectedObjects[0]?.type
@@ -74,6 +78,22 @@ const Toolbar = (
                 flex items-center overflow-x-auto z-[49] p-2 gap-x-2"/>
       )
     }
+
+    const onChangeFontSize = (value: number) => {
+      const selectObject = editor?.selectedObjects[0];
+
+      if(!selectObject){
+        return;
+      }
+      
+
+      editor?.changeFontSize(value);
+      setProperties((current)=>({
+        ...current,
+        fontSize: value
+      }))
+    }
+
 
     const onChangeTextAlign = (value: string) => {
       const selectObject = editor?.selectedObjects[0];
@@ -354,6 +374,17 @@ const Toolbar = (
               </Hint>
           </div>
           }
+           {
+            isText &&
+            <div className="flex items-center h-full justify-center">
+              <Hint lable="右对齐" side="bottom" sideOffset={5}>
+                <FontSizeInput
+                  value={properties.fontSize}
+                  onChange={onChangeFontSize}
+                />
+              </Hint>
+          </div>
+          }
           <div className="flex items-center h-full justify-center">
             <Hint lable="上移" side="bottom" sideOffset={5}>
               <Button
@@ -396,7 +427,24 @@ const Toolbar = (
               </Button>
             </Hint>
           </div>
+
+          <div className="flex items-center h-full justify-center">
+            <Hint lable="删除" side="bottom" sideOffset={5}>
+              <Button
+                onClick={() => editor?.delete()}
+                size="icon"
+                variant="ghost"
+                className={cn(
+                  activeTool === "opacity" && "bg-gray-200"
+                )}
+              >
+                <Trash className="size-4"/>
+              </Button>
+            </Hint>
+          </div>
         </div>
+
+        
       );
 }
  

@@ -8,6 +8,7 @@ import { BuildEditorProps,
          EditorHookProps, 
          FILL_COLOR, 
          FONT_FAMILI, 
+         FONT_SIZE, 
          FONT_WEIGHT, 
          RECTANGLE_OPTIONS, 
          STROKE_COLOR, 
@@ -53,7 +54,26 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
-       
+        addImage: (value: string) => {
+            fabric.Image.fromURL(
+                value,
+                (image) => {
+                    const workspace = getWorkpace();
+                    image.scaleToWidth(workspace?.width ||0)
+                    image.scaleToHeight(workspace?.height ||0)
+                    addToCanvas(image);
+                },
+                {
+                    crossOrigin: "anonymous",
+                }
+            )
+            canvas.renderAll()
+        },
+        delete: () => {
+            canvas.getActiveObjects().forEach((object) => canvas.remove(object))
+            canvas.discardActiveObject();
+            canvas.renderAll()
+        },
         bringForward: () => {
             canvas.getActiveObjects().forEach((object) => {
                 canvas.bringForward(object);
@@ -173,7 +193,16 @@ const buildEditor = ({
             })
             canvas.renderAll()
         },
-      
+        changeFontSize: (value: number) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    //@ts-ignore
+                    object.set({fontSize: value})
+                }
+               
+            })
+            canvas.renderAll()
+        },
         addCircle: ()=>{
             console.log("addCircle")
             const circle = new fabric.Circle({
@@ -348,6 +377,15 @@ const buildEditor = ({
             // @ts-ignore
             const value = selectedObject.get("textAlign") || "left";
             return value as string;
+        },
+        getActiveFontSize: ()=>{
+            const selectedObject = selectedObjects[0]
+            if(!selectedObject){
+                return FONT_SIZE;
+            }
+            // @ts-ignore
+            const value = selectedObject.get("fontSize") || FONT_SIZE;
+            return value as number;
         },
         fontFamily,
         strokeColor,

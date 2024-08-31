@@ -154,6 +154,7 @@ export type BuildEditorProps = {
 }
 
 export interface Editor{
+    addImage: (value: string) => void;
     bringForward: () => void;
     sendBackwards: () => void;
     addCircle: ()=>void;
@@ -163,6 +164,7 @@ export interface Editor{
     addInverseTrangle: ()=>void;
     addDiamond: ()=>void;
     addText: (value: string, options?: ITextboxOptions) => void;
+    delete: ()=>void;
     changeOpacity: (value:number) => void;
     changeFillColor: (color: string)=>void;
     changeStrokeColor: (color: string)=>void;
@@ -173,6 +175,7 @@ export interface Editor{
     changeFontStyle: (value:string) => void;
     changeFontLinethrough: (value:boolean)=>void;
     changeFontUnderline: (value:boolean)=>void;
+    changeFontSize: (value:number)=>void;
     changeTextAlign: (value:string)=>void;
     getActiveFillColor: () => string;
     getActiveStrokeColor: () => string;
@@ -185,6 +188,7 @@ export interface Editor{
     getActiveLinethrough: ()=>boolean;
     getActiveUnderline: ()=>boolean;
     getActiveTextAlign: ()=>string;
+    getActiveFontSize: ()=>number;
     canvas: fabric.Canvas;
     fillColor: string;
     strokeColor: string;
