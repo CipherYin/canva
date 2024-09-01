@@ -2,6 +2,17 @@ import { fabric } from "fabric";
 import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
 
+export const JSON_KEYS = [
+    "name",
+    "gradientAngle",
+    "selectable",
+    "hasControls",
+    "linkData",
+    "editable",
+    "extensionType",
+    "extension"
+  ];
+
 export const fonts = [
     "Arial",
     "Arial Black",
@@ -162,6 +173,11 @@ export const TEXT_OPTIONS = {
     fontFamily: FONT_FAMILI
 }
 export type BuildEditorProps = {
+    save: (skip?: boolean)=>void;
+    canRedo: ()=>boolean;
+    canUndo: ()=>boolean;
+    redo: ()=>void;
+    undo: ()=>void;
     autoZoom: () => void;
     copy: ()=>void;
     paste: ()=>void;
@@ -234,4 +250,9 @@ export interface Editor{
     zoomIn: ()=>void;
     zoomOut: ()=>void;
     autoZoom: ()=>void;
+    onUndo: ()=>void;
+    onRedo: ()=>void;
+    canUndo: ()=>boolean;
+    canRedo: ()=>boolean;
+    
 }

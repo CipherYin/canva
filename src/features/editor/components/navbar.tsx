@@ -15,16 +15,18 @@ import { CiFileOn } from "react-icons/ci";
 import { Separator } from "@/components/ui/separator";
 import { Hint } from "@/components/hint";
 import { BsCloudCheck } from "react-icons/bs";
-import { ActiveTool } from "../types";
+import { ActiveTool, Editor } from "../types";
 import { cn } from "@/lib/utils";
   
 interface NavbarProps {
+    editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
 export const Navbar = (
     {
+        editor,
         activeTool,
         onChangeActiveTool
     }: NavbarProps
@@ -73,9 +75,10 @@ export const Navbar = (
                 </Hint>
                 <Hint lable="撤销" side="bottom" sideOffset={10}>
                     <Button 
+                        disabled={!editor?.canUndo()}
                         variant="ghost"
                         size="icon"
-                        onClick={()=>{}} //todo:
+                        onClick={()=>editor?.onUndo()} //todo:
                         className="" 
 
                     >
@@ -84,9 +87,10 @@ export const Navbar = (
                 </Hint>
                 <Hint lable="恢复" side="bottom" sideOffset={10}>
                     <Button 
+                        disabled={!editor?.canRedo()}
                         variant="ghost"
                         size="icon"
-                        onClick={()=>{}} //todo:
+                        onClick={()=>editor?.onRedo()} //todo:
                         className="" 
                     >
                         <Redo2 className="size-4"/>

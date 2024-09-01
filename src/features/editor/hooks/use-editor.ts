@@ -10,6 +10,7 @@ import { BuildEditorProps,
          FONT_FAMILI, 
          FONT_SIZE, 
          FONT_WEIGHT, 
+         JSON_KEYS, 
          RECTANGLE_OPTIONS, 
          STROKE_COLOR, 
          STROKE_DASH_ARRAY, 
@@ -19,9 +20,15 @@ import { BuildEditorProps,
 import { useCanvasEvents } from "./use-canvas-events";
 import { createFilter, isTextType } from "../utils";
 import { useClipboard } from "./use-clipboard";
+import { useHistory } from "./use-history";
 
 
 const buildEditor = ({
+    save,
+    canRedo,
+    canUndo,
+    redo,
+    undo,
     autoZoom,
     copy,
     paste,
@@ -59,6 +66,7 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
+
         autoZoom,
         zoomIn: ()=>{
             let zoomRatio = canvas.getZoom();
@@ -245,13 +253,13 @@ const buildEditor = ({
             const workspace = getWorkpace();
             workspace?.set(size);
             autoZoom()
-            //todo: save
+            save()
         },
         changeBackground: (value:string)=>{
             const workspace = getWorkpace();
             workspace?.set({fill: value});
             canvas.renderAll();
-            //todo: save
+            save()
         },
         addCircle: ()=>{
             console.log("addCircle")
@@ -459,6 +467,10 @@ const buildEditor = ({
         selectedObjects,
         onCopy: ()=>copy(),
         onPaste: ()=>paste(),
+        onUndo: ()=>undo(),
+        onRedo: ()=>redo(),
+        canUndo,
+        canRedo
     };
 };
 
@@ -478,6 +490,7 @@ export const useEditor = (
     const [fontFamily, setFontFamily] = useState(FONT_FAMILI)
     const [fontWeight, setFontWeight] = useState(FONT_WEIGHT)
 
+    const {save,canRedo,canUndo,redo, undo,setHistoryIndex,canvasHistory} = useHistory({canvas});
     const {copy,paste} = useClipboard({
             canvas
         }
@@ -489,6 +502,12 @@ export const useEditor = (
     const editor = useMemo(()=>{
         if(canvas){
             return buildEditor({
+                save,
+                canRedo,
+                canUndo,
+                redo,
+                undo,
+                
                 autoZoom,
                 copy,
                 paste,
@@ -510,6 +529,11 @@ export const useEditor = (
         }
         return undefined;
     },[
+        save,
+        canRedo,
+        canUndo,
+        redo,
+        undo,
         autoZoom,
         canvas,
         fillColor,
@@ -522,6 +546,7 @@ export const useEditor = (
     ])
 
     useCanvasEvents({
+        save,
         canvas,
         setSelectedObjects,
         clearSelectionCallback
@@ -564,10 +589,12 @@ export const useEditor = (
         initialCanvas.centerObject(initialWorkspace);
         initialCanvas.clipPath = initialWorkspace;
 
-        setCanvas(initialCanvas)
-        setContainer(initialContainer)
-       
-
+        setCanvas(initialCanvas);
+        setContainer(initialContainer);
+        
+        const currentState = JSON.stringify(initialCanvas.toJSON());
+        canvasHistory.current = [currentState];
+        setHistoryIndex(0)
         // 创建一个圆形对象并添加到 canvas
         // const circle = new fabric.Circle({
         //     left: 200,
@@ -578,6 +605,9 @@ export const useEditor = (
 
         // initialCanvas.add(circle);
         // initialCanvas.centerObject(circle)
-    },[]) 
+    },[
+        canvasHistory,
+        setHistoryIndex
+    ]) 
     return {init,editor}
 }
