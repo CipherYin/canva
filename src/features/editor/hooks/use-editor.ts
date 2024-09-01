@@ -40,6 +40,7 @@ const buildEditor = ({
     setFontWeight,
     setFontFamily
 }: BuildEditorProps): Editor => {
+
     const getWorkpace = ()=>{
         return canvas.getObjects().find((obj)=>obj.name === "clip")
     }
@@ -58,6 +59,27 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
+        autoZoom,
+        zoomIn: ()=>{
+            let zoomRatio = canvas.getZoom();
+            zoomRatio+=0.05
+            const center = canvas.getCenter();
+            canvas.zoomToPoint(
+                new fabric.Point(center.left,center.top),
+                zoomRatio >1 ?1: zoomRatio
+            )
+
+        },
+        zoomOut: ()=>{
+            let zoomRatio = canvas.getZoom();
+            zoomRatio-=0.05
+            const center = canvas.getCenter();
+            canvas.zoomToPoint(
+                new fabric.Point(center.left,center.top),
+                zoomRatio <0.2 ? 0.2:zoomRatio
+            )
+
+        },
         getWorkpace,
         enableDrawingMode: ()=> {
                 canvas.discardActiveObject();

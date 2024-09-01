@@ -231,4 +231,7 @@ export interface Editor{
     onCopy: ()=>void;
     onPaste: ()=>void;
     getWorkpace: () => fabric.Object | undefined;
+    zoomIn: ()=>void;
+    zoomOut: ()=>void;
+    autoZoom: ()=>void;
 }
