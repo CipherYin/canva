@@ -17,7 +17,8 @@ import { Hint } from "@/components/hint";
 import { BsCloudCheck } from "react-icons/bs";
 import { ActiveTool, Editor } from "../types";
 import { cn } from "@/lib/utils";
-  
+import {useFilePicker} from "use-file-picker"
+import { any } from "zod";
 interface NavbarProps {
     editor: Editor | undefined;
     activeTool: ActiveTool;
@@ -31,6 +32,19 @@ export const Navbar = (
         onChangeActiveTool
     }: NavbarProps
 )=>{
+    const {openFilePicker} = useFilePicker({
+        accept: ".json",
+        onFilesSuccessfullySelected: ({plainFiles}: any) => {
+            if(plainFiles && plainFiles.length>0){
+                const file = plainFiles[0]
+                const reader = new FileReader();
+                reader.readAsText(file,'UTF-8');
+                reader.onload = () => {
+                    editor?.loadFromJson(reader.result as string)
+                }
+            }
+        }
+    })
     return (
         <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
             <Logo/>
@@ -45,7 +59,7 @@ export const Navbar = (
 
                     <DropdownMenuContent align="start" className="min-w-60">
                         <DropdownMenuItem
-                            onClick={() => {}} //todo: 
+                            onClick={() => openFilePicker()} 
                             className="flex items-center gap-x-2"
                         >
                             <CiFileOn className="size-8"/>
@@ -66,7 +80,7 @@ export const Navbar = (
                     <Button 
                         variant="ghost"
                         size="icon"
-                        onClick={()=>onChangeActiveTool("select")} //todo:
+                        onClick={()=>onChangeActiveTool("select")} 
                         className={cn(activeTool === "select" && "bg-gray-100")}
 
                     >
@@ -78,7 +92,7 @@ export const Navbar = (
                         disabled={!editor?.canUndo()}
                         variant="ghost"
                         size="icon"
-                        onClick={()=>editor?.onUndo()} //todo:
+                        onClick={()=>editor?.onUndo()}
                         className="" 
 
                     >
@@ -90,7 +104,7 @@ export const Navbar = (
                         disabled={!editor?.canRedo()}
                         variant="ghost"
                         size="icon"
-                        onClick={()=>editor?.onRedo()} //todo:
+                        onClick={()=>editor?.onRedo()}
                         className="" 
                     >
                         <Redo2 className="size-4"/>
@@ -115,6 +129,7 @@ export const Navbar = (
                         <DropdownMenuContent align="end" className="min-w-60">
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
+                                onClick={()=>editor?.saveJson()}
                             >
                                 <CiFileOn className="size-6"/>
                                 <div>
@@ -125,6 +140,7 @@ export const Navbar = (
 
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
+                                onClick={()=>editor?.savePng()}
                             >
                                 <CiFileOn className="size-6"/>
                                 <div>
@@ -134,6 +150,7 @@ export const Navbar = (
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
+                                onClick={()=>editor?.saveJpg()}
                             >
                                 <CiFileOn className="size-6"/>
                                 <div>
@@ -144,6 +161,7 @@ export const Navbar = (
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
+                                onClick={()=>editor?.saveSvg()}
                             >
                                 <CiFileOn className="size-6"/>
                                 <div>

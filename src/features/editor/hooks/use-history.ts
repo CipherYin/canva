@@ -30,6 +30,7 @@ export const useHistory = ({canvas}:UseHistoryProps)=>{
             setHistoryIndex(canvasHistory.current.length-1);
         } 
         //todo: save callback
+        //save to database
     },[canvas])
 
     const undo = useCallback(()=>{

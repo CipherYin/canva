@@ -254,5 +254,9 @@ export interface Editor{
     onRedo: ()=>void;
     canUndo: ()=>boolean;
     canRedo: ()=>boolean;
-    
+    saveJson: ()=>void;
+    savePng: ()=>void;
+    saveJpg: ()=>void;
+    saveSvg: ()=>void;
+    loadFromJson: (value: string)=>void
 }
