@@ -18,9 +18,12 @@ import { BuildEditorProps,
          TRIANGLE_OPTIONS} from "../types";
 import { useCanvasEvents } from "./use-canvas-events";
 import { createFilter, isTextType } from "../utils";
+import { useClipboard } from "./use-clipboard";
 
 
 const buildEditor = ({
+    copy,
+    paste,
     canvas,
     fillColor,
     strokeColor,
@@ -54,7 +57,18 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
-       
+        enableDrawingMode: ()=> {
+                canvas.discardActiveObject();
+                canvas.renderAll();
+
+                canvas.isDrawingMode = true;
+                canvas.freeDrawingBrush.width = strokeWidth;
+                canvas.freeDrawingBrush.color = strokeColor;
+                
+        },
+        disableDrawingMode: () => {
+            canvas.isDrawingMode=false;
+        },
         delete: () => {
             canvas.getActiveObjects().forEach((object) => canvas.remove(object))
             canvas.discardActiveObject();
@@ -404,7 +418,9 @@ const buildEditor = ({
         fontFamily,
         strokeColor,
         strokeWidth,
-        selectedObjects
+        selectedObjects,
+        onCopy: ()=>copy(),
+        onPaste: ()=>paste()
     };
 };
 
@@ -424,9 +440,15 @@ export const useEditor = (
     const [fontFamily, setFontFamily] = useState(FONT_FAMILI)
     const [fontWeight, setFontWeight] = useState(FONT_WEIGHT)
 
+    const {copy,paste} = useClipboard({
+            canvas
+        }
+    );
     const editor = useMemo(()=>{
         if(canvas){
             return buildEditor({
+                copy,
+                paste,
                 canvas,
                 fillColor,
                 strokeColor,

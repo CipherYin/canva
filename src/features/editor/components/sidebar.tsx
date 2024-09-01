@@ -36,13 +36,19 @@ const Sidebar = (
                     isActive={activeTool === "text"}
                     onClick={()=>onChangeActiveTool("text")}
                 />
+                
                  <SidebarItem
                     icon={Shapes}
                     lable="图形"
                     isActive={activeTool==="shapes"}
                     onClick={()=>onChangeActiveTool("shapes")}
                 />
-
+                <SidebarItem
+                    icon={Pencil}
+                    lable="画笔"
+                    isActive={activeTool==="draw"}
+                    onClick={()=>onChangeActiveTool("draw")}
+                />
                 <SidebarItem
                     icon={Sparkles}
                     lable="AI"

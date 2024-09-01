@@ -162,6 +162,8 @@ export const TEXT_OPTIONS = {
     fontFamily: FONT_FAMILI
 }
 export type BuildEditorProps = {
+    copy: ()=>void;
+    paste: ()=>void;
     canvas: fabric.Canvas;
     fillColor: string;
     strokeColor: string;
@@ -179,6 +181,8 @@ export type BuildEditorProps = {
 }
 
 export interface Editor{
+    enableDrawingMode: ()=>void,
+    disableDrawingMode: ()=>void,
     addImage: (value: string) => void;
     bringForward: () => void;
     sendBackwards: () => void;
@@ -221,6 +225,6 @@ export interface Editor{
     strokeWidth: number;
     fontFamily: string;
     selectedObjects: fabric.Object[]
-    
-    
+    onCopy: ()=>void;
+    onPaste: ()=>void;
 }
