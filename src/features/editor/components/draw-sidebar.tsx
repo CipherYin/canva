@@ -25,6 +25,7 @@ const DrawSidebar = (
     const width = editor?.getActiveStrokeWidth() || STROKE_WIDTH;
 
     const  onClose = ()=>{
+        editor?.disableDrawingMode();
         onChangeActiveTool("select")
     }
 

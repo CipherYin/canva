@@ -22,6 +22,7 @@ import { useClipboard } from "./use-clipboard";
 
 
 const buildEditor = ({
+    autoZoom,
     copy,
     paste,
     canvas,
@@ -57,6 +58,7 @@ const buildEditor = ({
         canvas.setActiveObject(object)
     }
     return {
+        getWorkpace,
         enableDrawingMode: ()=> {
                 canvas.discardActiveObject();
                 canvas.renderAll();
@@ -216,6 +218,18 @@ const buildEditor = ({
                     canvas.renderAll();
                 }
             })
+        },
+        changeSize: (size: {width: number;height: number}) => {
+            const workspace = getWorkpace();
+            workspace?.set(size);
+            autoZoom()
+            //todo: save
+        },
+        changeBackground: (value:string)=>{
+            const workspace = getWorkpace();
+            workspace?.set({fill: value});
+            canvas.renderAll();
+            //todo: save
         },
         addCircle: ()=>{
             console.log("addCircle")
@@ -422,7 +436,7 @@ const buildEditor = ({
         strokeWidth,
         selectedObjects,
         onCopy: ()=>copy(),
-        onPaste: ()=>paste()
+        onPaste: ()=>paste(),
     };
 };
 
@@ -446,9 +460,14 @@ export const useEditor = (
             canvas
         }
     );
+    const {autoZoom} = useAutoResize({
+        canvas,
+        container
+    });
     const editor = useMemo(()=>{
         if(canvas){
             return buildEditor({
+                autoZoom,
                 copy,
                 paste,
                 canvas,
@@ -468,7 +487,9 @@ export const useEditor = (
             });
         }
         return undefined;
-    },[canvas,
+    },[
+        autoZoom,
+        canvas,
         fillColor,
         strokeColor,
         strokeWidth,
@@ -483,10 +504,7 @@ export const useEditor = (
         setSelectedObjects,
         clearSelectionCallback
     })
-    useAutoResize({
-        canvas,
-        container
-    });
+    
     const init = useCallback(({
         initialCanvas,
         initialContainer

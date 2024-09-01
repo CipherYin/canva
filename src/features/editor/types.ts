@@ -162,6 +162,7 @@ export const TEXT_OPTIONS = {
     fontFamily: FONT_FAMILI
 }
 export type BuildEditorProps = {
+    autoZoom: () => void;
     copy: ()=>void;
     paste: ()=>void;
     canvas: fabric.Canvas;
@@ -207,6 +208,8 @@ export interface Editor{
     changeFontSize: (value:number)=>void;
     changeTextAlign: (value:string)=>void;
     changeImageFilter: (value:string)=>void;
+    changeSize: (size: {width: number;height: number})=>void;
+    changeBackground: (value:string)=>void;
     getActiveFillColor: () => string;
     getActiveStrokeColor: () => string;
     getActiveStrokeWidth: () => number;
@@ -224,7 +227,8 @@ export interface Editor{
     strokeColor: string;
     strokeWidth: number;
     fontFamily: string;
-    selectedObjects: fabric.Object[]
+    selectedObjects: fabric.Object[];
     onCopy: ()=>void;
     onPaste: ()=>void;
+    getWorkpace: () => fabric.Object | undefined;
 }
