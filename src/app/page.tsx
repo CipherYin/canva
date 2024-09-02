@@ -1,12 +1,14 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import {auth} from "@/auth"
+import { protectServer } from "@/features/auth/utils";
+export default async function Home() {
+  await protectServer();
 
-export default function Home() {
+  const session = await auth();
+  
   return (
+
     <div>
-      <Button>
-        Click me
-      </Button>
+        
     </div>
   );
 }
