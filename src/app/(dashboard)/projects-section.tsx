@@ -28,6 +28,8 @@ const ProjectsSectionPage = () => {
     const router = useRouter()
     const duplicateMutation = useDuplicateroject();
     const removeMutation = useDeleteProject();
+  
+
     const [ConfirmationDialog,confirm] = useConfirm(
         "确定要执行此操作吗？",
         "你将删除选择的项目"
@@ -76,7 +78,7 @@ const ProjectsSectionPage = () => {
             </div>
         )
     }
-    if(!data?.pages.length){
+    if(!data?.pages.length || !data.pages[0].data.length){
         return (
             <div className="space-y-4">
                 <h3 className="font-semibold text-lg"> 

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SessionProvider } from "next-auth/react";
 import {auth} from "@/auth"
+import { Toaster } from "sonner";
+import { Modals } from "@/components/modals";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,6 +25,8 @@ export default async function RootLayout({
             
             <body className={inter.className}>
               <Providers>
+                <Toaster />
+                <Modals />
                 {children}
               </Providers>
               

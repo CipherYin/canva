@@ -5,9 +5,31 @@ import { verifyAuth } from "@hono/auth-js";
 import { projects, projectsInsertSchema } from "@/db/schema";
 import { error } from "console";
 import { db } from "@/db/drizzle";
-import {eq,and,desc} from "drizzle-orm"
+import {eq,and,desc, asc} from "drizzle-orm"
 import {z} from "zod"
 const app = new Hono()
+    .get("/templates",
+        verifyAuth(),
+        zValidator("query",
+            z.object({
+                page: z.coerce.number(),
+                limit: z.coerce.number()
+            })
+        ),
+        async (c) => {
+            const {page,limit} = c.req.valid("query")
+            
+            const data = await db
+                .select()
+                .from(projects)
+                .where(eq(projects.isTemplate,true))
+                .limit(limit)
+                .offset((page-1)*limit)
+                .orderBy(asc(projects.isPro),
+                        desc(projects.updatedAt))
+            return c.json({data})
+        }
+    )
     .delete("/:id",
         verifyAuth(),
         zValidator("param",z.object( {id: z.string()})),
