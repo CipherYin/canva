@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { protectServer } from "@/features/auth/utils";
 import { Editor } from "@/features/editor/components/editor";
-import { useGetProject } from "@/features/projects/api/use-get-projects";
+import { useGetProject } from "@/features/projects/api/use-get-project";
 import { Loader, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 
