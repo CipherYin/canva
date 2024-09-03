@@ -9,7 +9,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
-import { AlertTriangle, CopyIcon, FileIcon, Loader, MoreHorizontal, Search, TrashIcon } from "lucide-react";
+import { AlertTriangle, CopyIcon, FileIcon, Loader, MoreHorizontal, Search, Trash, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import {formatDistanceToNow} from "date-fns"
@@ -18,18 +18,30 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button";
+import { useDuplicateroject } from "@/features/projects/api/use-duplicate-project";
+import { useDeleteProject } from "@/features/projects/api/use-delete-project";
+import { useConfirm } from "@/hooks/use-confirm";
 const ProjectsSectionPage = () => {
     const router = useRouter()
+    const duplicateMutation = useDuplicateroject();
+    const removeMutation = useDeleteProject();
+    const [ConfirmationDialog,confirm] = useConfirm(
+        "确定要执行此操作吗？",
+        "你将删除选择的项目"
+    )
+    const onDelete = async (id: string) => {
+        const ok = await confirm();
+        if(ok){
+            removeMutation.mutate({id})
+        }
+        
+    }
+    const onCopy = (id: string) => {
+        duplicateMutation.mutate({id})
+    }
     const {
         data,
         status,
@@ -37,6 +49,8 @@ const ProjectsSectionPage = () => {
         isFetchingNextPage,
         hasNextPage
     } = useGetProjects();
+
+
     if(status === "pending"){
         <div className="space-y-4">
                 <h3 className="font-semibold text-lg"> 
@@ -79,6 +93,7 @@ const ProjectsSectionPage = () => {
     }
     return ( 
         <div className="space-y-4">
+            <ConfirmationDialog/>
             <h3 className="font-semibold text-lg">
                 最近项目
             </h3>
@@ -122,18 +137,18 @@ const ProjectsSectionPage = () => {
                                             <DropdownMenuContent align="end" className="w-60">
                                                 <DropdownMenuItem
                                                     className="h-10 cursor-pointer"
-                                                    disabled={false}
-                                                    onClick={()=>{}}
+                                                    disabled={duplicateMutation.isPending}
+                                                    onClick={()=>onCopy(project.id)}
                                                 >
                                                     <CopyIcon className="size-4 mr-2"/>
                                                     复制
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     className="h-10 cursor-pointer"
-                                                    disabled={false}
-                                                    onClick={()=>{}}
+                                                    disabled={removeMutation.isPending}
+                                                    onClick={()=>onDelete(project.id)}
                                                 >
-                                                    <TrashIcon className="size-4 mr-2"/>
+                                                    <Trash className="size-4 mr-2"/>
                                                     删除
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
