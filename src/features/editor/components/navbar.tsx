@@ -19,6 +19,7 @@ import { ActiveTool, Editor } from "../types";
 import { cn } from "@/lib/utils";
 import {useFilePicker} from "use-file-picker"
 import { any } from "zod";
+import UserButton from "@/features/auth/component/user-button";
 interface NavbarProps {
     editor: Editor | undefined;
     activeTool: ActiveTool;
@@ -172,7 +173,7 @@ export const Navbar = (
                         </DropdownMenuContent>
                     </DropdownMenu>
 
-                    {/* add use button */}
+                    <UserButton/>
                 </div>
 
         </div>
