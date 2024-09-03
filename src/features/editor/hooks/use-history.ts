@@ -2,12 +2,17 @@ import { useCallback, useRef, useState } from "react"
 import { JSON_KEYS } from "../types";
 
 interface UseHistoryProps {
+    saveCallback?: (values: {
+        json: string,
+        height: number,
+        width: number
+    }) => void 
     canvas: fabric.Canvas | null;
 
 }
 
 
-export const useHistory = ({canvas}:UseHistoryProps)=>{
+export const useHistory = ({saveCallback,canvas}:UseHistoryProps)=>{
     const [historyIndex,setHistoryIndex] = useState(0);
     const canvasHistory = useRef<String[]>([]);
     const skipSave = useRef(false);
@@ -29,9 +34,17 @@ export const useHistory = ({canvas}:UseHistoryProps)=>{
             canvasHistory.current.push(json)
             setHistoryIndex(canvasHistory.current.length-1);
         } 
-        //todo: save callback
-        //save to database
-    },[canvas])
+        const workspace = canvas.getObjects()
+            .find((object) => object.name==='clip')
+        const height = workspace?.height || 0;
+        const width = workspace?.width || 0;
+        saveCallback?.({
+            json,
+            height,
+            width
+        })
+
+    },[canvas,saveCallback])
 
     const undo = useCallback(()=>{
         if(canUndo()){

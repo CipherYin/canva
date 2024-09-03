@@ -2,6 +2,7 @@
 import { useEditor } from "@/features/editor/hooks/use-editor";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
+import debounce from "lodash.debounce"
 import { Navbar } from "@/features/editor/components/navbar";
 import Sidebar from "@/features/editor/components/sidebar";
 import Toolbar from "@/features/editor/components/toolbar";
@@ -21,10 +22,23 @@ import RemoveBgSidebar from "./remove-bg-sidebar";
 import DrawSidebar from "./draw-sidebar";
 import SettingsSidebar from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-projects";
+import { useUpdateProject } from "@/features/projects/api/use-update-project";
 interface EditorProps {
     initialData: ResponseType["data"]
 }
 export const Editor = ({initialData}:EditorProps) => {
+    const {mutate} = useUpdateProject(initialData.id)
+    const debouncedSave = useCallback(
+        debounce(
+            (values: {
+        json: string,
+        height: number,
+        width: number
+    }) => {
+        // todo: add debounce
+        
+        mutate(values)
+    },500),[mutate]) 
     const [activeTool,setActiveTool] = useState<ActiveTool>("select");
 
     
@@ -36,7 +50,11 @@ export const Editor = ({initialData}:EditorProps) => {
     },[activeTool])
 
     const {init,editor} = useEditor({
+        defaultState: initialData.json,
+        defaultWidth: initialData.width,
+        defaultHeight: initialData.height,
         clearSelectionCallback: onClearSelection,
+        saveCallback: debouncedSave
     })
 
     const canvasRef = useRef(null)
@@ -76,7 +94,8 @@ export const Editor = ({initialData}:EditorProps) => {
     return (
         <div className="h-full flex flex-col">
             <Navbar
-                editor={editor}
+                 id={initialData.id}
+                 editor={editor}
                  activeTool={activeTool}
                  onChangeActiveTool={onChangeActiveTool}
             />

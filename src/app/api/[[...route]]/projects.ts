@@ -9,7 +9,7 @@ import {eq,and} from "drizzle-orm"
 import {z} from "zod"
 const app = new Hono()
     .patch(
-        ":id",
+        "/:id",
         verifyAuth(),
         zValidator(
             "param",
@@ -28,6 +28,7 @@ const app = new Hono()
         ),
 
         async (c) => {
+            
             const auth = c.get("authUser");
             const {id} = c.req.valid("param");
             const values = c.req.valid("json")
