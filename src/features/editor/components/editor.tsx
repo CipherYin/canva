@@ -24,20 +24,20 @@ import SettingsSidebar from "./settings-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-project";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
 import TemplateSidebar from "./templates-sidebar";
+import { Loader } from "lucide-react";
 interface EditorProps {
     initialData: ResponseType["data"]
 }
 export const Editor = ({initialData}:EditorProps) => {
     const {mutate} = useUpdateProject(initialData.id)
+   
     const debouncedSave = useCallback(
         debounce(
             (values: {
         json: string,
         height: number,
         width: number
-    }) => {
-        // todo: add debounce
-        
+    }) => {        
         mutate(values)
     },500),[mutate]) 
     const [activeTool,setActiveTool] = useState<ActiveTool>("select");

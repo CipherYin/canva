@@ -5,6 +5,7 @@ import { Editor } from "@/features/editor/components/editor";
 import { useGetProject } from "@/features/projects/api/use-get-project";
 import { Loader, TriangleAlert } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface EditorProjectIdPageProps{
     params: {
@@ -13,7 +14,16 @@ interface EditorProjectIdPageProps{
 }
 const EditorProjectIdPage =  ({params}: EditorProjectIdPageProps) => {
     const {data,isLoading,isError} = useGetProject(params.projectId)
-    if(isLoading || !data){
+    const [showLoader, setShowLoader] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLoader(false);
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, []);
+    if(isLoading || !data && showLoader){
         return (
             <div className="h-full flex flex-col items-center justify-center">
                 <Loader className="size-6 animate-spin text-muted-foreground"/>

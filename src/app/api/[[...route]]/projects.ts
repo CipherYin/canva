@@ -88,6 +88,7 @@ const app = new Hono()
                     width: project.width,
                     height: project.height,
                     userId: auth.token.id,
+                    isTemplate: false,
                     createdAt: new Date(),
                     updatedAt: new Date()
                 })
@@ -116,7 +117,8 @@ const app = new Hono()
             const data = await db
                     .select()
                     .from(projects)
-                    .where(eq(projects.userId,auth.token.id))
+                    .where(and(eq(projects.userId,auth.token.id),
+                            eq(projects.isTemplate,false)))
                     .limit(limit)
                     .offset((page-1)*limit)
                     .orderBy(desc(projects.updatedAt))
@@ -221,6 +223,7 @@ const app = new Hono()
                     json,
                     width,
                     height,
+                    isTemplate: false,
                     userId: auth.token.id,
                     createdAt: new Date(),
                     updatedAt: new Date()

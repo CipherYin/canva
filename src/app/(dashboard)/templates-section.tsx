@@ -6,12 +6,17 @@ import TemplateCard from "./template-card";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { useRouter } from "next/navigation";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useConfirm } from "@/hooks/use-confirm";
 
 const TemplatesSectionPage = () => {
     const {data,isLoading,isError} = useGetTemplates({page: "1",limit: "4"})
     const mutation = useCreateProject()
     const paywall = usePaywall()
     const router = useRouter()
+    const [ConfirmationDialog,confirm] = useConfirm(
+        "点击确认前往编辑.....",
+        " "
+    )
     if(isLoading){
         return (
             <div className="space-y-4">
@@ -45,7 +50,7 @@ const TemplatesSectionPage = () => {
     if(!data?.length){
         return null;
     }
-
+    
     const onClick = (template: ResponseType["data"][0]) => {
         if(template.isPro && paywall.shouldBlock){
             paywall.triggerPaywall()
@@ -59,8 +64,11 @@ const TemplatesSectionPage = () => {
             height: template.height,
           },
           {
-            onSuccess: ({ data }) => {
-              router.push(`/editor/${data.id}`);
+            onSuccess: async ({ data }) => {
+                const ok = await confirm();
+                if(ok){
+                    router.push(`/editor/${data.id}`);
+                }
             },
           },
         );
@@ -70,6 +78,7 @@ const TemplatesSectionPage = () => {
             <h3 className="font-semibold text-lg"> 
                 精选模版
             </h3>
+            <ConfirmationDialog/>
             <div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-4">
                 {data?.map((template) => (
                     <TemplateCard
