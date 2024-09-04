@@ -14,16 +14,9 @@ interface EditorProjectIdPageProps{
 }
 const EditorProjectIdPage =  ({params}: EditorProjectIdPageProps) => {
     const {data,isLoading,isError} = useGetProject(params.projectId)
-    const [showLoader, setShowLoader] = useState(true);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowLoader(false);
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, []);
-    if(isLoading || !data && showLoader){
+   
+    if(isLoading || !data){
         return (
             <div className="h-full flex flex-col items-center justify-center">
                 <Loader className="size-6 animate-spin text-muted-foreground"/>
